@@ -1,0 +1,110 @@
+package com.example.login_screen
+
+import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.os.Message
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.Toolbar
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.ktx.Firebase
+
+class chat : AppCompatActivity() {
+    private lateinit var messageRecyclerView: RecyclerView
+    private lateinit var messageBox :EditText
+    private lateinit var sendButton :ImageView
+    private lateinit var messageAdapter: messageAdapter
+    private lateinit var messageList : ArrayList<messaage>
+    private lateinit var mdbref : DatabaseReference
+
+
+    var recciverRoom: String? = null
+    var senderRoom : String? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_chat)
+        val Toolba2 = findViewById<Toolbar>(R.id.toolbar2)
+        val name = intent.getStringExtra("name")
+        val Recciveruid = intent.getStringExtra("uid")
+        mdbref = FirebaseDatabase.getInstance().getReference()
+
+        val senderUId  = FirebaseAuth.getInstance().currentUser?.uid
+        senderRoom= Recciveruid + senderUId
+        recciverRoom = senderUId + Recciveruid
+        Toolba2.title = name
+        setActionBar(Toolba2)
+
+
+
+        messageList = ArrayList()
+        messageAdapter = messageAdapter(this,messageList)
+        messageRecyclerView = findViewById(R.id.chatt)
+        messageBox = findViewById(R.id.messageBox)
+        sendButton = findViewById(R.id.send3)
+
+
+
+        messageRecyclerView.layoutManager = LinearLayoutManager(this)
+        messageRecyclerView.adapter = messageAdapter
+        mdbref.child("chats").child(senderRoom!!).child("message")
+            .addValueEventListener(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    messageList.clear()
+                    for(postSnap in snapshot.children){
+                        val messaage = postSnap.getValue(messaage::class.java)
+                        messageList.add(messaage!!)
+                    }
+                    messageAdapter.notifyDataSetChanged()
+
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+
+
+            })
+        sendButton.setOnClickListener{
+
+
+
+
+
+            // here the messaeg is addeed to the data base
+            val message : String? = messageBox.text.toString()
+            val messageObject =  messaage(message,senderUId)
+            mdbref.child("chats").child(senderRoom!!).child("message").push()
+                .setValue(messageObject).addOnSuccessListener {
+
+                }
+            mdbref.child("chats").child(recciverRoom!!).child("message").push()
+                .setValue(messageObject).addOnSuccessListener {
+
+                }
+
+            messageAdapter.notifyDataSetChanged()
+            messageBox.setText("")
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+    }
+}
