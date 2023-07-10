@@ -13,10 +13,13 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/ll"
         android:layout_alignParentTop="true"
+        android:layout_marginBottom="12dp"
         app:layout_constraintBottom_toTopOf="@+id/ll"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar2"
+        app:layout_constraintVertical_bias="1.0" />
 
     <LinearLayout
         android:id="@+id/ll"
@@ -57,16 +60,16 @@
             android:src="@drawable/baseline_send_24" />
     </LinearLayout>
 
-    <Toolbar
+    <TextView
         android:id="@+id/toolbar2"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="45dp"
         android:layout_marginStart="1dp"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:textColor="@color/white"
         android:layout_marginEnd="1dp"
-        android:background="#0191FF"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        android:titleTextColor="#FFFFFF"
+        android:background="@drawable/rounded_not_borde"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -13,6 +13,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
 import android.widget.EditText
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
@@ -21,16 +22,16 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import androidx.core.content.res.ResourcesCompat
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.tasks.Task
 import com.google.android.material.tabs.TabLayout.TabGravity
 import kotlinx.coroutines.handleCoroutineException
-
+import java.util.TimerTask
 
 class sigin : AppCompatActivity(),goog{
 
-    companion object {
-        const val RC_SIGN_IN = 123
-    }
 
+    private val RC_SIGN_IN = 123
+    private lateinit var client :GoogleSignInClient
     private lateinit var auth:FirebaseAuth
     private lateinit var emai_text: EditText
     private lateinit var pass_text :EditText
@@ -41,7 +42,7 @@ class sigin : AppCompatActivity(),goog{
         setContentView(R.layout.news)
 
         val facebook = findViewById<ImageButton>(R.id.facebook)
-        google= findViewById<ImageButton>(R.id.google)
+        google= findViewById(R.id.google)
         val apple = findViewById<ImageButton>(R.id.apple)
         emai_text = findViewById(R.id.email)
         pass_text = findViewById(R.id.password)
@@ -53,12 +54,12 @@ class sigin : AppCompatActivity(),goog{
         auth = FirebaseAuth.getInstance()
 
 
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
+            .requestIdToken(getString(R.string.default_web_client_id))
             .build()
 
-        val client = GoogleSignIn.getClient(this,gso)
+        client = GoogleSignIn.getClient(this,gso)
         google.setOnClickListener{
             val signInIntent = client.signInIntent
             startActivityForResult(signInIntent, RC_SIGN_IN)
@@ -87,19 +88,25 @@ class sigin : AppCompatActivity(),goog{
 
         if(requestCode== RC_SIGN_IN){
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+//            handleSignInResult(task)
             try{
                 val account = task.getResult(ApiException::class.java)
                 firebaseAuthWithGoogle(account)
             }
             catch (e:ApiException){
-                Toast.makeText(this,"Failed", Toast.LENGTH_SHORT).show()
-//                Log.w(TAG,"Google sign in failed",e)
+//                Toast.makeText(this,"Failed", Toast.LENGTH_SHORT).show()
+                Log.w(TAG,"Google sign in failed",e)
             }
         }
     }
 
 
-
+//    private fun  handleSignInResult(completedTask: Task<GoogleSignInAccount>){
+//        val account = completedTask.getResult(ApiException::class.java)
+//        sequenceOf(Toast.makeText(this,"Sign in succefully", Toast.LENGTH_SHORT))
+//
+//
+//    }
     private fun singInWithEmailnPassword(email: String, passwordb: String) {
             auth.signInWithEmailAndPassword(email,passwordb)
                 .addOnCompleteListener(this){task->

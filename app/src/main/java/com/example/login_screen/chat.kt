@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Message
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -32,7 +33,7 @@ class chat : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
-        val Toolba2 = findViewById<Toolbar>(R.id.toolbar2)
+        val Toolba2 = findViewById<TextView>(R.id.toolbar2)
         val name = intent.getStringExtra("name")
         val Recciveruid = intent.getStringExtra("uid")
         mdbref = FirebaseDatabase.getInstance().getReference()
@@ -40,8 +41,8 @@ class chat : AppCompatActivity() {
         val senderUId  = FirebaseAuth.getInstance().currentUser?.uid
         senderRoom= Recciveruid + senderUId
         recciverRoom = senderUId + Recciveruid
-        Toolba2.title = name
-        setActionBar(Toolba2)
+        Toolba2.text = name
+
 
 
 
@@ -62,8 +63,15 @@ class chat : AppCompatActivity() {
                     for(postSnap in snapshot.children){
                         val messaage = postSnap.getValue(messaage::class.java)
                         messageList.add(messaage!!)
+                        messageAdapter.notifyDataSetChanged()
+                        messageRecyclerView.smoothScrollToPosition(messageAdapter.itemCount - 1)
+                        messageRecyclerView.postDelayed({
+                            messageRecyclerView.smoothScrollToPosition(messageAdapter.itemCount - 1)
+                        }, 200) // Delay in milliseconds (adjust as needed)
+
+
                     }
-                    messageAdapter.notifyDataSetChanged()
+
 
                 }
 

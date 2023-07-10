@@ -1,5 +1,6 @@
 package com.example.login_screen
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,6 +8,8 @@ import android.renderscript.Sampler.Value
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Adapter
+import android.widget.ImageView
+import android.widget.SearchView
 import android.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,16 +29,33 @@ class Homescreen : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_homescreen)
+
+
         userList = ArrayList()
         kapa = UserAdapter(this, userList)
         auth = FirebaseAuth.getInstance()
-        val toolbar: androidx.appcompat.widget.Toolbar? =
-            findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar!!)
         rc = findViewById(R.id.rc)
         rc.layoutManager = LinearLayoutManager(this)
         rc.adapter = kapa
         mdref = FirebaseDatabase.getInstance().getReference()
+
+//        val ss = findViewById<SearchView>(R.id.ss)
+//        ss.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
+//            override fun onQueryTextSubmit(p0: String?): Boolean {
+//                performSearch(query)
+//                return true
+//            }
+//
+//            override fun onQueryTextChange(p0: String?): Boolean {
+//                TODO("Not yet implemented")
+//                return true
+//            }
+//        })
+
+        val lgot = findViewById<ImageView>(R.id.logt)
+        lgot.setOnClickListener{
+            geees(this)
+        }
 
         kapa.notifyDataSetChanged()
         mdref.child("user").addValueEventListener(object : ValueEventListener {
@@ -62,21 +82,19 @@ class Homescreen : AppCompatActivity() {
         })
     }
 
+    private fun performSearch(query: Any) {
 
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu,menu)
-        return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.logout){
-            auth.signOut()
-            val intent = Intent(this,sigin::class.java)
-            startActivity(intent)
-            finish()
-            return true
+    fun geees(context: Context): Boolean {
+
+                auth.signOut()
+                val intent = Intent(context,sigin::class.java)
+                startActivity(intent)
+                finish()
+                return true
+
+
         }
-        return true
     }
-}
+

@@ -7,12 +7,10 @@
     android:background="@drawable/starry_night_sky"
     tools:context=".ss">
 
-    <ImageView
-        android:id="@+id/vv"
+    <VideoView
+        android:id="@+id/bv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitXY"
-        android:src="@drawable/starry_night_sky"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,7 +27,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.38"
-        app:srcCompat="@drawable/logo2br" />
+        app:srcCompat="@drawable/logo" />
 
     <TextView
         android:id="@+id/textView3"
